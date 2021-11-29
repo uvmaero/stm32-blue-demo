@@ -68,6 +68,14 @@ Delay function:
 
 Where **1000** is the time in system ticks. This corresponds to the number of system ticks which is not always 1ms, so be careful. 
 
+Analog Control
+
+assuming the ADC1 pin is an anlog input 
+
+    HAL_ADC_Start(&hadc1);
+	HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
+	raw = HAL_ADC_GetValue(&hadc1);
+
 #
 # Debugging
 
@@ -88,7 +96,13 @@ You'll need to use the "STM32CubeProgrammer" Application to connect to the board
 Quick Demonstration for the STM32CubeIDE environment to make the STM32 Blue Pill Blink. (Default is 2000ms interval). 
 You should be able to open this project and upload to the blue pill. 
 
+No schematic for this one, it just uses the built in LED for output. 
+
 ## Sensor Reading Folder
 
-This is a more in depth overview about connecing an analog sensor (potentiometer) and reading the values on the computer. 
+This is a more in depth overview about connecing an analog sensor (potentiometer) and reading the values on the computer.
+
+There are two code snippits in the main loop. Only have one uncommented at a time, or else it will interfer with eachother. One is an "led counter" which turns leds on and off at a specific interval". The second on uses a potentiometer to control which leds are on. See the schematic for wiring diagrams. 
+
+![Sensor Schematic](sensor-schematic.png)
 
