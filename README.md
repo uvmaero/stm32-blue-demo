@@ -76,10 +76,12 @@ assuming the ADC1 pin is an anlog input
 	HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
 	raw = HAL_ADC_GetValue(&hadc1);
 
-#
+
 # Debugging
 
 ## Serial Output
+
+Yes there is a way to do this. Still looking into it...
 
 ## What Happens when I brick the board? 
 
@@ -88,21 +90,25 @@ First off, "brick" means that the board is no longer accepting programming infor
 ## Erasing the Chip
 
 You'll need to use the "STM32CubeProgrammer" Application to connect to the board and erase the chip. This process can be tricky. You'll have to hold the reset on the board before you press "connect" but release it about 1-2 seconds after pressing "connect". Timming is crutial and may take a couple tries. 
-#
+
 # Folders
 
-## Blink Folder
+# Blink Folder
 
 Quick Demonstration for the STM32CubeIDE environment to make the STM32 Blue Pill Blink. (Default is 2000ms interval). 
 You should be able to open this project and upload to the blue pill. 
 
-No schematic for this one, it just uses the built in LED for output. 
+No schematic for this one, it just uses the built in LED for output. Here's the pin configurations though. **NOTE** Don't forget to set the SYS debug mode to "Serial Wire". 
 
-## Sensor Reading Folder
+![Blink Pinout](images/blink-pin-diagram.png)
+
+# Sensor Reading Folder
 
 This is a more in depth overview about connecing an analog sensor (potentiometer) and reading the values on the computer.
 
 There are two code snippits in the main loop. Only have one uncommented at a time, or else it will interfer with eachother. One is an "led counter" which turns leds on and off at a specific interval". The second on uses a potentiometer to control which leds are on. See the schematic for wiring diagrams. 
 
 ![Sensor Schematic](sensor-schematic.png)
+
+![Sensor Pinout](images/sensor-pin-diagram.png)
 
