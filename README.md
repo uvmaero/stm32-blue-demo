@@ -4,7 +4,7 @@ Using the STM32 Blue Pill to get up to speed on the STM32 environment. Note: The
 
 ## Project Notes: 
 
-More branches will be added for project development, but the main branch will always have the latest stable working version of all the projects. The README will include images and links to more resources where necessary. If somethign doesn't work or is difficult to understand, please submit an issue. 
+More branches will be added for project development, but the main branch will always have the latest stable working version of all the projects. The README will include images and links to more resources where necessary. If something doesn't work or is difficult to understand, please submit an issue. 
 
 Sections include: 
 
