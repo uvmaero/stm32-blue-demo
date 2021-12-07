@@ -6,6 +6,14 @@ Using the STM32 Blue Pill to get up to speed on the STM32 environment. Note: The
 
 More branches will be added for project development, but the main branch will always have the latest stable working version of all the projects. The README will include images and links to more resources where necessary. If something doesn't work or is difficult to understand, please submit an issue. 
 
+## Resources: 
+
+You are not alone. There are people who have just started with STM32 boards before, and there will be many more in the future. Here are some of the resoures used to make these tutorials accessible for you: 
+
+ - [SWV Trace Debugging](https://sebastian.io/blog/stm32-swv-trace-debugging)
+
+## Sections
+
 Sections include: 
 
 - [Connecting and Programming](#connecting-and-programming)
@@ -98,7 +106,7 @@ You'll need to use the "STM32CubeProgrammer" Application to connect to the board
 Quick Demonstration for the STM32CubeIDE environment to make the STM32 Blue Pill Blink. (Default is 2000ms interval). 
 You should be able to open this project and upload to the blue pill. 
 
-No schematic for this one, it just uses the built in LED for output. Here's the pin configurations though. **NOTE** Don't forget to set the SYS debug mode to "Serial Wire". 
+No schematic for this one, it just uses the built in LED for output. The built in LED uses GPIO pin PC13 set to GPIO_OUTPUT mode with output set to LOW. Here's the pin configurations though. **NOTE** Don't forget to set the SYS debug mode to "Serial Wire". 
 
 ![Blink Pinout](images/blink-pin-diagram.png)
 
