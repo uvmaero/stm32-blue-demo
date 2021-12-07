@@ -50,12 +50,21 @@ ADC_HandleTypeDef hadc1;
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_ADC1_Init(void);
+
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+int _write(int32_t file, uint8_t *ptr, int32_t len) {
+	/* Implement your write code here, this is used by puts and printf for example */
+	int i = 0;
+	for(i=0; i < len; i++) {
+		ITM_SendChar((*ptr++));
+	}
+	return len;
+}
 
 /* USER CODE END 0 */
 
@@ -150,7 +159,13 @@ int main(void)
 	 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
 	 	 }
 
-	 HAL_Delay(1);
+
+	// Convert to string and print
+	printf("hello world: %hu\r\n", raw);
+
+
+
+//	 HAL_Delay(1);
 
     /* USER CODE END WHILE */
 
