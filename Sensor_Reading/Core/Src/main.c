@@ -165,7 +165,7 @@ int main(void)
 
 
 
-//	 HAL_Delay(1);
+	 HAL_Delay(10);
 
     /* USER CODE END WHILE */
 
