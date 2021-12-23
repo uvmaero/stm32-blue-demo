@@ -120,3 +120,7 @@ There are two code snippits in the main loop. Only have one uncommented at a tim
 
 ![Sensor Pinout](images/sensor-pin-diagram.png)
 
+# LCD Folder
+
+This is an example of how to setup an LCD Screen. There are two files that you'll need from this folder for any LCD screen setup. They are in the inc and src folders, file called "i2c-lcd". 
+
