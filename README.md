@@ -42,21 +42,31 @@ This uses the ST-Link V2 programmer. Lots of generic ones available. Be sure to 
 
 Applications you'll need: 
 
- - STM32CubeProgrammer -> used for connecing to the baord and reading data
+ - [STM32CubeProgrammer](https://www.st.com/en/development-tools/stm32cubeprog.html) -> used for connecing to the baord and reading data. If using a stm32 clone, download [STM32LinkUtility](https://www.st.com/en/development-tools/stsw-link004.html) instead
 
- - STM32CubeIDE -> used to configure the chip, develop firmware, upload to board, debugging and more
+ - [STM32CubeIDE](https://www.st.com/en/development-tools/stm32cubeide.html) -> used to configure the chip, develop firmware, upload to board, debugging and more
 
 ## Pin Setup
 
 **Important** when configuring the pins, Enable the SYS Debug mode as "Serial Wire". If you don't, after uploading (if you can) you may brick the board (See [Debugging](#debugging))
 
+For the clock configuration, you'll have to go into the RCC tab and enable the high clock speed. Now you can go to the clock configuration tab and change the clock speed to 72MHz.
+
 ## Build Configuration
+
+If you're following this tutorial using the blue pill board, it's probably a clone and is very difficult. If so, Go to [STM32 Clone Build](#stm32-clone-build) to see how to build and run the program. Otherwise, in the Cube IDE setup the debug configurations as shown below: 
 
 Under the Debug Configuration options, add a new debug configuration for each project you create. In "Debugger", "Debug probe" should be "ST-LINK (OpenOCD)". 
 
 Select "Show Generator Options" for more options. Under "Mode Setup" select "Software System Reset"
 
 ![Debug Configuration](images/debug_config_2.png)
+
+## STM32 Clone Build
+
+If you're using the clone, you have to use the STM32 Link Utility Application and upload the .bin file that is generated. When you're in the CubeIDE, you can build the file by going to the main.c file under the src folder and pressing the little hammer icon in the toolbar at the top. Now a file is built. Error messages may be generated. Address those as needed. 
+
+Next you can go to the ST Link Utility and Program the board. You'll have to go to the folder you were working in and select the .bin file in the Debug folder
 
 ## Code Notes
 
@@ -115,8 +125,6 @@ No schematic for this one, it just uses the built in LED for output. The built i
 This is a more in depth overview about connecing an analog sensor (potentiometer) and reading the values on the computer.
 
 There are two code snippits in the main loop. Only have one uncommented at a time, or else it will interfer with eachother. One is an "led counter" which turns leds on and off at a specific interval". The second on uses a potentiometer to control which leds are on. See the schematic for wiring diagrams. 
-
-![Sensor Schematic](sensor-schematic.png)
 
 ![Sensor Pinout](images/sensor-pin-diagram.png)
 
