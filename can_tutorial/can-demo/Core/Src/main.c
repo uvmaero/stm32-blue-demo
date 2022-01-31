@@ -73,6 +73,7 @@ int main(void)
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
+  
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
@@ -89,25 +90,26 @@ int main(void)
   MX_CAN_Init();
   /* USER CODE BEGIN 2 */
 
+  CAN_TxHeaderTypeDef pHeader;
+  uint8_t aData[8] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
+  uint32_t pTxMailbox;
+  HAL_StatusTypeDef mesgSend;
   // ************************** // 
   // SETUP FILTERS FOR CAN HERE
   // hal_can_configFilter()
-CAN_FilterTypeDef filter1( // setup a filter for each message we're looking for
-  .FilterIdHigh;        
-  .FilterIdLow;         
-  .FilterMaskIdHigh;    
-  .FilterMaskIdLow;     
-  .FilterFIFOAssignment;
-  .FilterBank;          
-  .FilterMode;          
-  .FilterScale;         
-  .FilterActivation;    
-  .SlaveStartFilterBank;
-)
+	CAN_FilterTypeDef filter1; // setup a filter for each message we're looking for
+	filter1.FilterIdHigh = 0xFF;
+	filter1.FilterIdLow = 0x00;
+	filter1.FilterMaskIdHigh = 0xFF;
+	filter1.FilterMaskIdLow = 0x00;
+	filter1.FilterFIFOAssignment = CAN_FILTER_FIFO0;
+	filter1.FilterMode = CAN_FILTERMODE_IDMASK;
+	filter1.FilterScale = CAN_FILTERSCALE_32BIT;
+	filter1.FilterActivation = CAN_FILTER_ENABLE;
   // Also use Hal_can_start() to start the service
   HAL_StatusTypeDef can_status;
   
-  can_status = HAL_CAN_Start(*hcan)
+  can_status = HAL_CAN_Start(*hcan);
   if (!can_status==HAL_OK){
     // something bad happened, make it better please
   }
@@ -120,8 +122,17 @@ CAN_FilterTypeDef filter1( // setup a filter for each message we're looking for
   while (1)
   {
 
+    // send a message
+    mesgSend = HAL_CAN_AddTxMessage(*hcan, *pHeader, aData, *pTxMailbox);
+    if (mesgSend != HAL_OK){
+
+    	// do something if the message couldn't send
+    }
+
     // Check for messages
     // do something?
+
+    HAL_Delay(1);
 
     /* USER CODE END WHILE */
 
