@@ -199,42 +199,17 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
-  * @brief This function handles CAN RX1 interrupt.
+  * @brief This function handles USB low priority or CAN RX0 interrupts.
   */
-void CAN1_RX1_IRQHandler(void)
+void USB_LP_CAN1_RX0_IRQHandler(void)
 {
-  /* USER CODE BEGIN CAN1_RX1_IRQn 0 */
+  /* USER CODE BEGIN USB_LP_CAN1_RX0_IRQn 0 */
 
-  // CODE TO WRITE HERE:
-  // - check message id
-  // - check message data
-  // - do something with the data
-
-  // HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan);
-  HAL_StatusTypeDef recMsg;
-  CAN_HandleTypeDef hcan;
-  uint8_t aData[8];
-  uint32_t RxFifo = CAN_FILTER_FIFO0;
-  CAN_RxHeaderTypeDef pHeader;
-  pHeader.StdId = 0x32;
-  pHeader.IDE = CAN_ID_STD;
-  pHeader.RTR = CAN_RTR_DATA;
-  pHeader.DLC = 8;
-  
-  recMsg = HAL_CAN_GetRxMessage(*hcan, RxFifo,*pHeader, aData);
-  if(recMsg == HAL_OK){
-    // do something like check the message contents??
-    if(pHeader.StdId == 0x072){
-      int x = aData[2];
-    }
-  }
-
-
-  /* USER CODE END CAN1_RX1_IRQn 0 */
+  /* USER CODE END USB_LP_CAN1_RX0_IRQn 0 */
   HAL_CAN_IRQHandler(&hcan);
-  /* USER CODE BEGIN CAN1_RX1_IRQn 1 */
+  /* USER CODE BEGIN USB_LP_CAN1_RX0_IRQn 1 */
 
-  /* USER CODE END CAN1_RX1_IRQn 1 */
+  /* USER CODE END USB_LP_CAN1_RX0_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

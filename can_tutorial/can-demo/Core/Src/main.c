@@ -6,12 +6,13 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2022 STMicroelectronics.
-  * All rights reserved.
+  * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
+  * All rights reserved.</center></h2>
   *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
+  * This software component is licensed by ST under BSD 3-Clause license,
+  * the "License"; You may not use this file except in compliance with the
+  * License. You may obtain a copy of the License at:
+  *                        opensource.org/licenses/BSD-3-Clause
   *
   ******************************************************************************
   */
@@ -43,6 +44,12 @@ CAN_HandleTypeDef hcan;
 
 /* USER CODE BEGIN PV */
 
+CAN_RxHeaderTypeDef rxHeader; //CAN Bus Transmit Header
+CAN_TxHeaderTypeDef txHeader; //CAN Bus Receive Header
+uint8_t canRX[8] = {0,0,0,0,0,0,0,0};  //CAN Bus Receive Buffer
+CAN_FilterTypeDef canfil; //CAN Bus Filter
+uint32_t canMailbox; //CAN Bus Mail box variable
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -73,7 +80,6 @@ int main(void)
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
-  
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
@@ -90,50 +96,36 @@ int main(void)
   MX_CAN_Init();
   /* USER CODE BEGIN 2 */
 
-  CAN_TxHeaderTypeDef pHeader;
-  uint8_t aData[8] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
-  uint32_t pTxMailbox;
-  HAL_StatusTypeDef mesgSend;
-  // ************************** // 
-  // SETUP FILTERS FOR CAN HERE
-  // hal_can_configFilter()
-	CAN_FilterTypeDef filter1; // setup a filter for each message we're looking for
-	filter1.FilterIdHigh = 0xFF;
-	filter1.FilterIdLow = 0x00;
-	filter1.FilterMaskIdHigh = 0xFF;
-	filter1.FilterMaskIdLow = 0x00;
-	filter1.FilterFIFOAssignment = CAN_FILTER_FIFO0;
-	filter1.FilterMode = CAN_FILTERMODE_IDMASK;
-	filter1.FilterScale = CAN_FILTERSCALE_32BIT;
-	filter1.FilterActivation = CAN_FILTER_ENABLE;
-  // Also use Hal_can_start() to start the service
-  HAL_StatusTypeDef can_status;
-  
-  can_status = HAL_CAN_Start(*hcan);
-  if (!can_status==HAL_OK){
-    // something bad happened, make it better please
-  }
-  // ************************** // 
+  canfil.FilterBank = 0;
+  canfil.FilterMode = CAN_FILTERMODE_IDMASK;
+  canfil.FilterFIFOAssignment = CAN_RX_FIFO0;
+  canfil.FilterIdHigh = 0;
+  canfil.FilterIdLow = 0;
+  canfil.FilterMaskIdHigh = 0;
+  canfil.FilterMaskIdLow = 0;
+  canfil.FilterScale = CAN_FILTERSCALE_32BIT;
+  canfil.FilterActivation = ENABLE;
+  canfil.SlaveStartFilterBank = 14;
 
+  txHeader.DLC = 8;
+  txHeader.IDE = CAN_ID_STD;
+  txHeader.RTR = CAN_RTR_DATA;
+  txHeader.StdId = 0x030;
+  txHeader.ExtId = 0x02;
+  txHeader.TransmitGlobalTime = DISABLE;
+
+  HAL_CAN_ConfigFilter(&hcan,&canfil);
+  HAL_CAN_Start(&hcan);
+  HAL_CAN_ActivateNotification(&hcan,CAN_IT_RX_FIFO0_MSG_PENDING);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-
-    // send a message
-    mesgSend = HAL_CAN_AddTxMessage(*hcan, *pHeader, aData, *pTxMailbox);
-    if (mesgSend != HAL_OK){
-
-    	// do something if the message couldn't send
-    }
-
-    // Check for messages
-    // do something?
-
-    HAL_Delay(1);
-
+	  uint8_t csend[] = {0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08};
+	  HAL_CAN_AddTxMessage(&hcan,&txHeader,csend,&canMailbox);
+	  HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -195,10 +187,10 @@ static void MX_CAN_Init(void)
 
   /* USER CODE END CAN_Init 1 */
   hcan.Instance = CAN1;
-  hcan.Init.Prescaler = 4;
+  hcan.Init.Prescaler = 9;
   hcan.Init.Mode = CAN_MODE_NORMAL;
   hcan.Init.SyncJumpWidth = CAN_SJW_1TQ;
-  hcan.Init.TimeSeg1 = CAN_BS1_13TQ;
+  hcan.Init.TimeSeg1 = CAN_BS1_3TQ;
   hcan.Init.TimeSeg2 = CAN_BS2_4TQ;
   hcan.Init.TimeTriggeredMode = DISABLE;
   hcan.Init.AutoBusOff = DISABLE;
@@ -223,15 +215,33 @@ static void MX_CAN_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : PA3 */
+  GPIO_InitStruct.Pin = GPIO_PIN_3;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
 }
 
 /* USER CODE BEGIN 4 */
+
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan1)
+{
+	HAL_CAN_GetRxMessage(hcan1, CAN_RX_FIFO0, &rxHeader, canRX);
+	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_3);
+
+}
 
 /* USER CODE END 4 */
 
@@ -243,10 +253,7 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-  __disable_irq();
-  while (1)
-  {
-  }
+
   /* USER CODE END Error_Handler_Debug */
 }
 
@@ -262,7 +269,7 @@ void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+     tex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
