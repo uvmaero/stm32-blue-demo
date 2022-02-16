@@ -37,13 +37,13 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  16 .debug_macro  00017095  00000000  00000000  00026638  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   000050de  00000000  00000000  0003d6cd  2**0
+ 17 .debug_line   00005258  00000000  00000000  0003d6cd  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    0008123c  00000000  00000000  000427ab  2**0
+ 18 .debug_str    0008123c  00000000  00000000  00042925  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000053  00000000  00000000  000c39e7  2**0
+ 19 .comment      00000053  00000000  00000000  000c3b61  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  000017f8  00000000  00000000  000c3a3c  2**2
+ 20 .debug_frame  000017f8  00000000  00000000  000c3bb4  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -679,7 +679,7 @@ int _close(int file)
  8000400:	af00      	add	r7, sp, #0
  8000402:	6078      	str	r0, [r7, #4]
 	return -1;
- 8000404:	f04f 33ff 	mov.w	r3, #4294967295	; 0xffffffff
+ 8000404:	f04f 33ff 	mov.w	r3, #4294967295
 }
  8000408:	4618      	mov	r0, r3
  800040a:	370c      	adds	r7, #12
@@ -799,7 +799,7 @@ void *_sbrk(ptrdiff_t incr)
  8000492:	220c      	movs	r2, #12
  8000494:	601a      	str	r2, [r3, #0]
     return (void *)-1;
- 8000496:	f04f 33ff 	mov.w	r3, #4294967295	; 0xffffffff
+ 8000496:	f04f 33ff 	mov.w	r3, #4294967295
  800049a:	e009      	b.n	80004b0 <_sbrk+0x54>
   }
 
@@ -1029,7 +1029,7 @@ __weak HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
     HAL_NVIC_SetPriority(SysTick_IRQn, TickPriority, 0U);
  8000580:	2200      	movs	r2, #0
  8000582:	6879      	ldr	r1, [r7, #4]
- 8000584:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
+ 8000584:	f04f 30ff 	mov.w	r0, #4294967295
  8000588:	f000 f90b 	bl	80007a2 <HAL_NVIC_SetPriority>
     uwTickPrio = TickPriority;
  800058c:	4a06      	ldr	r2, [pc, #24]	; (80005a8 <HAL_InitTick+0x5c>)
@@ -1120,7 +1120,7 @@ __weak void HAL_Delay(uint32_t Delay)
   /* Add a freq to guarantee minimum wait */
   if (wait < HAL_MAX_DELAY)
  80005f6:	68fb      	ldr	r3, [r7, #12]
- 80005f8:	f1b3 3fff 	cmp.w	r3, #4294967295	; 0xffffffff
+ 80005f8:	f1b3 3fff 	cmp.w	r3, #4294967295
  80005fc:	d005      	beq.n	800060a <HAL_Delay+0x26>
   {
     wait += (uint32_t)(uwTickFreq);
@@ -1320,7 +1320,7 @@ __STATIC_INLINE uint32_t NVIC_EncodePriority (uint32_t PriorityGroup, uint32_t P
 
   return (
            ((PreemptPriority & (uint32_t)((1UL << (PreemptPriorityBits)) - 1UL)) << SubPriorityBits) |
- 8000718:	f04f 32ff 	mov.w	r2, #4294967295	; 0xffffffff
+ 8000718:	f04f 32ff 	mov.w	r2, #4294967295
  800071c:	69bb      	ldr	r3, [r7, #24]
  800071e:	fa02 f303 	lsl.w	r3, r2, r3
  8000722:	43da      	mvns	r2, r3
@@ -1329,7 +1329,7 @@ __STATIC_INLINE uint32_t NVIC_EncodePriority (uint32_t PriorityGroup, uint32_t P
  8000728:	697b      	ldr	r3, [r7, #20]
  800072a:	409a      	lsls	r2, r3
            ((SubPriority     & (uint32_t)((1UL << (SubPriorityBits    )) - 1UL)))
- 800072c:	f04f 31ff 	mov.w	r1, #4294967295	; 0xffffffff
+ 800072c:	f04f 31ff 	mov.w	r1, #4294967295
  8000730:	697b      	ldr	r3, [r7, #20]
  8000732:	fa01 f303 	lsl.w	r3, r1, r3
  8000736:	43d9      	mvns	r1, r3
@@ -1374,7 +1374,7 @@ __STATIC_INLINE uint32_t SysTick_Config(uint32_t ticks)
  8000764:	6053      	str	r3, [r2, #4]
   NVIC_SetPriority (SysTick_IRQn, (1UL << __NVIC_PRIO_BITS) - 1UL); /* set Priority for Systick Interrupt */
  8000766:	210f      	movs	r1, #15
- 8000768:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
+ 8000768:	f04f 30ff 	mov.w	r0, #4294967295
  800076c:	f7ff ff90 	bl	8000690 <__NVIC_SetPriority>
   SysTick->VAL   = 0UL;                                             /* Load the SysTick Counter Value */
  8000770:	4b05      	ldr	r3, [pc, #20]	; (8000788 <SysTick_Config+0x40>)
@@ -3910,7 +3910,7 @@ static void RCC_Delay(uint32_t mdelay)
  80016fe:	6e6b      	ldr	r3, [r5, #100]	; 0x64
  8001700:	07dc      	lsls	r4, r3, #31
  8001702:	d50e      	bpl.n	8001722 <_vfiprintf_r+0x6a>
- 8001704:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
+ 8001704:	f04f 30ff 	mov.w	r0, #4294967295
  8001708:	b01d      	add	sp, #116	; 0x74
  800170a:	e8bd 8ff0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, pc}
  800170e:	4b7b      	ldr	r3, [pc, #492]	; (80018fc <_vfiprintf_r+0x244>)
@@ -3960,7 +3960,7 @@ static void RCC_Delay(uint32_t mdelay)
  800177c:	2b00      	cmp	r3, #0
  800177e:	f000 80a2 	beq.w	80018c6 <_vfiprintf_r+0x20e>
  8001782:	2300      	movs	r3, #0
- 8001784:	f04f 32ff 	mov.w	r2, #4294967295	; 0xffffffff
+ 8001784:	f04f 32ff 	mov.w	r2, #4294967295
  8001788:	e9cd 2305 	strd	r2, r3, [sp, #20]
  800178c:	f10a 0a01 	add.w	sl, sl, #1
  8001790:	9304      	str	r3, [sp, #16]
@@ -4028,7 +4028,7 @@ static void RCC_Delay(uint32_t mdelay)
  8001822:	9203      	str	r2, [sp, #12]
  8001824:	2b00      	cmp	r3, #0
  8001826:	bfb8      	it	lt
- 8001828:	f04f 33ff 	movlt.w	r3, #4294967295	; 0xffffffff
+ 8001828:	f04f 33ff 	movlt.w	r3, #4294967295
  800182c:	9305      	str	r3, [sp, #20]
  800182e:	f8df a0e4 	ldr.w	sl, [pc, #228]	; 8001914 <_vfiprintf_r+0x25c>
  8001832:	2203      	movs	r2, #3
@@ -4199,7 +4199,7 @@ static void RCC_Delay(uint32_t mdelay)
  80019ba:	47c0      	blx	r8
  80019bc:	3001      	adds	r0, #1
  80019be:	d103      	bne.n	80019c8 <_printf_common+0xb0>
- 80019c0:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
+ 80019c0:	f04f 30ff 	mov.w	r0, #4294967295
  80019c4:	e8bd 87f0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, r9, sl, pc}
  80019c8:	3501      	adds	r5, #1
  80019ca:	e7c4      	b.n	8001956 <_printf_common+0x3e>
@@ -4348,7 +4348,7 @@ static void RCC_Delay(uint32_t mdelay)
  8001b3a:	bfde      	ittt	le
  8001b3c:	2330      	movle	r3, #48	; 0x30
  8001b3e:	f806 3c01 	strble.w	r3, [r6, #-1]
- 8001b42:	f106 36ff 	addle.w	r6, r6, #4294967295	; 0xffffffff
+ 8001b42:	f106 36ff 	addle.w	r6, r6, #4294967295
  8001b46:	1b92      	subs	r2, r2, r6
  8001b48:	6122      	str	r2, [r4, #16]
  8001b4a:	464b      	mov	r3, r9
@@ -4359,7 +4359,7 @@ static void RCC_Delay(uint32_t mdelay)
  8001b56:	f7ff fedf 	bl	8001918 <_printf_common>
  8001b5a:	3001      	adds	r0, #1
  8001b5c:	d14c      	bne.n	8001bf8 <_printf_i+0x200>
- 8001b5e:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
+ 8001b5e:	f04f 30ff 	mov.w	r0, #4294967295
  8001b62:	b004      	add	sp, #16
  8001b64:	e8bd 87f0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, r9, sl, pc}
  8001b68:	4834      	ldr	r0, [pc, #208]	; (8001c3c <_printf_i+0x244>)
@@ -4607,7 +4607,7 @@ static void RCC_Delay(uint32_t mdelay)
  8001d74:	f000 f81e 	bl	8001db4 <__swsetup_r>
  8001d78:	2800      	cmp	r0, #0
  8001d7a:	d0cb      	beq.n	8001d14 <__swbuf_r+0x28>
- 8001d7c:	f04f 37ff 	mov.w	r7, #4294967295	; 0xffffffff
+ 8001d7c:	f04f 37ff 	mov.w	r7, #4294967295
  8001d80:	e7ea      	b.n	8001d58 <__swbuf_r+0x6c>
  8001d82:	bf00      	nop
  8001d84:	080022bc 	.word	0x080022bc
@@ -4656,7 +4656,7 @@ static void RCC_Delay(uint32_t mdelay)
  8001de0:	2309      	movs	r3, #9
  8001de2:	6033      	str	r3, [r6, #0]
  8001de4:	f042 0340 	orr.w	r3, r2, #64	; 0x40
- 8001de8:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
+ 8001de8:	f04f 30ff 	mov.w	r0, #4294967295
  8001dec:	81a3      	strh	r3, [r4, #12]
  8001dee:	e03e      	b.n	8001e6e <__swsetup_r+0xba>
  8001df0:	4b25      	ldr	r3, [pc, #148]	; (8001e88 <__swsetup_r+0xd4>)
@@ -4856,7 +4856,7 @@ static void RCC_Delay(uint32_t mdelay)
  8001f9c:	2800      	cmp	r0, #0
  8001f9e:	dc06      	bgt.n	8001fae <__sflush_r+0xfe>
  8001fa0:	89a3      	ldrh	r3, [r4, #12]
- 8001fa2:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
+ 8001fa2:	f04f 30ff 	mov.w	r0, #4294967295
  8001fa6:	f043 0340 	orr.w	r3, r3, #64	; 0x40
  8001faa:	81a3      	strh	r3, [r4, #12]
  8001fac:	e78e      	b.n	8001ecc <__sflush_r+0x1c>
