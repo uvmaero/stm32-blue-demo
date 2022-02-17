@@ -74,7 +74,7 @@ void StartDefaultTask(void const * argument);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	lcdInit(&hi2c1, 0x27, 2, 16);       			    // init lcd (i2c reference, LCD address, lines, rows)
+	lcdInit(&hi2c1, 0x4E, 2, 16);       			      // init lcd (i2c reference, LCD address, lines, rows)
 	lcdAutoscrollOff();								              // turn off autoscroll
 	lcdBacklightOn();								                // turn on backlight
 	lcdDisplayClear();                  			      // clear the screen
