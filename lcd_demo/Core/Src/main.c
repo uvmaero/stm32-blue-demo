@@ -79,7 +79,6 @@ int main(void)
 	lcdBacklightOn();								                // turn on backlight
 	lcdDisplayClear();                  			      // clear the screen
 
-
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -139,7 +138,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE */
+    /* USER CODE END WHILE*/
 	lcdSetCursorPosition(2, 0);         			      // set the cursor
 	lcdPrintStr((uint8_t*)"welcome AERO!", 13);   	// print
 	lcdSetCursorPosition(2, 1);         			      // next line

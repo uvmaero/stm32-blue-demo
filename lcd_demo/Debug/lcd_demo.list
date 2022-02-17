@@ -984,10 +984,10 @@ int main(void)
  800071a:	b088      	sub	sp, #32
  800071c:	af00      	add	r7, sp, #0
   /* USER CODE BEGIN 1 */
-	lcdInit(&hi2c1, 0x27, 2, 16);       			    // init lcd (i2c reference, LCD address, lines, rows)
+	lcdInit(&hi2c1, 0x4E, 2, 16);       			      // init lcd (i2c reference, LCD address, lines, rows)
  800071e:	2310      	movs	r3, #16
  8000720:	2202      	movs	r2, #2
- 8000722:	2127      	movs	r1, #39	; 0x27
+ 8000722:	214e      	movs	r1, #78	; 0x4e
  8000724:	4821      	ldr	r0, [pc, #132]	; (80007ac <main+0x94>)
  8000726:	f7ff fd6d 	bl	8000204 <lcdInit>
 	lcdAutoscrollOff();								              // turn off autoscroll
@@ -1058,7 +1058,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE */
+    /* USER CODE END WHILE*/
 	lcdSetCursorPosition(2, 0);         			      // set the cursor
  800077a:	2100      	movs	r1, #0
  800077c:	2002      	movs	r0, #2
