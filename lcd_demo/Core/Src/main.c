@@ -74,14 +74,11 @@ void StartDefaultTask(void const * argument);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  	lcdInit(&hi2c1, 0x27, 2, 16);       			    // init lcd (i2c reference, LCD address, lines, rows)
+	lcdInit(&hi2c1, 0x27, 2, 16);       			    // init lcd (i2c reference, LCD address, lines, rows)
 	lcdAutoscrollOff();								              // turn off autoscroll
 	lcdBacklightOn();								                // turn on backlight
 	lcdDisplayClear();                  			      // clear the screen
-	lcdSetCursorPosition(2, 0);         			      // set the cursor
-	lcdPrintStr((uint8_t*)"welcome AERO!", 13);   	// print
-	lcdSetCursorPosition(2, 1);         			      // next line
-	lcdPrintStr((uint8_t*)"booting up...", 13);   	// print
+
 
   /* USER CODE END 1 */
 
@@ -143,6 +140,13 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+	lcdSetCursorPosition(2, 0);         			      // set the cursor
+	lcdPrintStr((uint8_t*)"welcome AERO!", 13);   	// print
+	lcdSetCursorPosition(2, 1);         			      // next line
+	lcdPrintStr((uint8_t*)"booting up...", 13);   	// print
+
+	HAL_Delay(3000);
+	lcdDisplayClear();
 
     /* USER CODE BEGIN 3 */
   }
