@@ -1,6 +1,6 @@
-# stm32-blue-demo
+# STM32-Blue-Demo
 
-Using the STM32 Blue Pill to get up to speed on the STM32 environment. Note: The chip is the SMT32F103C8. (A lot of generic blue pill boards will use a functionally idential chip as this)
+Using the STM32 Blue Pill to get up to speed on the STM32 environment. Note: The chip is the SMT32F103C8. (A lot of generic blue pill boards will use a functionally idential chip as this) This repo aslo has information on the Discovery Board which uses the STM32F303VCT8. 
 
 ## Project Notes: 
 
@@ -11,6 +11,8 @@ More branches will be added for project development, but the main branch will al
 You are not alone. There are people who have just started with STM32 boards before, and there will be many more in the future. Here are some of the resoures used to make these tutorials accessible for you: 
 
  - [SWV Trace Debugging](https://sebastian.io/blog/stm32-swv-trace-debugging)
+ - [STM32F303 Datasheet](https://www.st.com/resource/en/datasheet/stm32f303vc.pdf)
+ - [STM32F303 Reference Manual](https://www.st.com/resource/en/reference_manual/dm00043574-stm32f303xb-c-d-e-stm32f303x6-8-stm32f328x8-stm32f358xc-stm32f398xe-advanced-arm-based-mcus-stmicroelectronics.pdf)
 
 ## Sections
 
@@ -132,3 +134,6 @@ There are two code snippits in the main loop. Only have one uncommented at a tim
 
 This is an example of how to setup an LCD Screen. There are two files that you'll need from this folder for any LCD screen setup. They are in the inc and src folders, file called "i2c-lcd". 
 
+# Discovery CAN Loopback
+
+This project is about CAN. Specificcally, if you have a device, you can setup CAN filters so you can test Tx and Rx mailboxes. This is very valuable to setup filters. From this you should be able to switch to Normal mode and use some transceivers to setup the actual bus. 
