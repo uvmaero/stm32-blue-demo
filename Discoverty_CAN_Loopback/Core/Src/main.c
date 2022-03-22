@@ -69,7 +69,7 @@ uint8_t count = 0;
 int datacheck = 0;
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
-  if (GPIO_Pin == GPIO_PIN_6){
+  if (GPIO_Pin == GPIO_PIN_10){
     TxData[0] = 100;
     TxData[1] = 3;
 
@@ -211,7 +211,7 @@ static void MX_CAN_Init(void)
   /* USER CODE END CAN_Init 1 */
   hcan.Instance = CAN;
   hcan.Init.Prescaler = 18;
-  hcan.Init.Mode = CAN_MODE_NORMAL;
+  hcan.Init.Mode = CAN_MODE_LOOPBACK;
   hcan.Init.SyncJumpWidth = CAN_SJW_1TQ;
   hcan.Init.TimeSeg1 = CAN_BS1_2TQ;
   hcan.Init.TimeSeg2 = CAN_BS2_1TQ;
@@ -231,7 +231,7 @@ static void MX_CAN_Init(void)
   canfilterconfig.FilterActivation = CAN_FILTER_ENABLE;
   canfilterconfig.FilterBank = 10;
   canfilterconfig.FilterFIFOAssignment = CAN_RX_FIFO0;
-  canfilterconfig.FilterIdHigh = 0xA1 << 5;
+  canfilterconfig.FilterIdHigh = 0xA0 << 5;
   canfilterconfig.FilterIdLow = 0x0000;
   canfilterconfig.FilterMaskIdHigh = 0xA1 << 5;
   canfilterconfig.FilterMaskIdLow = 0x0000;
