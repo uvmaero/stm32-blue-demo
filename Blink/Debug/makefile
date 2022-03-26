@@ -62,8 +62,8 @@ all:
 main-build: blink.elf secondary-outputs
 
 # Tool invocations
-blink.elf: $(OBJS) $(USER_OBJS) /home/george/Documents/AERO/2022/stm32_blink_program/STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "blink.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"/home/george/Documents/AERO/2022/stm32_blink_program/STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="blink.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+blink.elf: $(OBJS) $(USER_OBJS) /home/george/Documents/GitHub/AERO/stm32-blue-demo/Blink/STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "blink.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"/home/george/Documents/GitHub/AERO/stm32-blue-demo/Blink/STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="blink.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
