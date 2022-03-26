@@ -67,6 +67,7 @@ uint8_t RxData[8];
 uint8_t count = 0;
 
 int datacheck = 0;
+int datacheck2 = 0;
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
   if (GPIO_Pin == GPIO_PIN_10){
@@ -81,8 +82,11 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan){
   
   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
-  if (RxHeader.DLC == 2){
+  if (RxHeader.StdId == 0x0A0){ // must be "0x012" format with 3 value id
     datacheck = 1;
+  }
+  else if (RxHeader.StdId == 0x0A2){
+    datacheck2 = 1;
   }
 }
 
@@ -126,7 +130,7 @@ int main(void)
   TxHeader.ExtId = 0;
   TxHeader.IDE = CAN_ID_STD;
   TxHeader.RTR = CAN_RTR_DATA;
-  TxHeader.StdId = 0xA0;
+  TxHeader.StdId = 0xA1;
   TxHeader.TransmitGlobalTime = DISABLE;
 
   TxData[0] = 0xf3;
@@ -154,6 +158,13 @@ int main(void)
         HAL_Delay(RxData[0]);
       }
       datacheck = 0;
+    }
+    if (datacheck2){
+      for (int i=0; i<RxData[1]; i++){
+        HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+        HAL_Delay(1000);
+      }
+      datacheck2 = 0;
     }
   }
   /* USER CODE END 3 */
@@ -237,19 +248,38 @@ static void MX_CAN1_Init(void)
   }
   /* USER CODE BEGIN CAN1_Init 2 */
 
-  CAN_FilterTypeDef canfilterconfig;
-  canfilterconfig.FilterActivation = CAN_FILTER_ENABLE;
-  canfilterconfig.FilterBank = 0;
-  canfilterconfig.FilterFIFOAssignment = CAN_RX_FIFO0;
-  canfilterconfig.FilterIdHigh = 0xA1 << 5;
-  canfilterconfig.FilterIdLow = 0x0000;
-  canfilterconfig.FilterMaskIdHigh = 0xA1 << 5;
-  canfilterconfig.FilterMaskIdLow = 0x0000;
-  canfilterconfig.FilterMode = CAN_FILTERMODE_IDMASK;
-  canfilterconfig.FilterScale = CAN_FILTERSCALE_32BIT;
-  canfilterconfig.SlaveStartFilterBank = 0;
+  // CAN_FilterTypeDef canfilterconfig;
+  // canfilterconfig.FilterActivation = CAN_FILTER_ENABLE;
+  // canfilterconfig.FilterBank = 0;
+  // canfilterconfig.FilterFIFOAssignment = CAN_RX_FIFO0;
+  // canfilterconfig.FilterIdHigh = 0xA0 << 5;
+  // canfilterconfig.FilterIdLow = 0x0000;
+  // canfilterconfig.FilterMaskIdHigh = 0xA0 << 5;
+  // canfilterconfig.FilterMaskIdLow = 0x0000;
+  // canfilterconfig.FilterMode = CAN_FILTERMODE_IDMASK;
+  // canfilterconfig.FilterScale = CAN_FILTERSCALE_32BIT;
+  // canfilterconfig.SlaveStartFilterBank = 0;
 
-  HAL_CAN_ConfigFilter(&hcan1, &canfilterconfig);
+  // HAL_CAN_ConfigFilter(&hcan1, &canfilterconfig);
+
+
+  CAN_FilterTypeDef canfilterconfig2;
+  canfilterconfig2.FilterActivation = CAN_FILTER_ENABLE;
+  canfilterconfig2.FilterBank = 1; // Change for each address we're looking for
+  canfilterconfig2.FilterFIFOAssignment = CAN_RX_FIFO0;
+  // for the FilterID, we can just use 0x0FF to match all of them
+  canfilterconfig2.FilterIdHigh = 0x0FF<< 5; // shift 5 because we conly care about standard id, not extended
+  canfilterconfig2.FilterIdLow = 0x0000;
+  // for the maskID, this is what masks against the filterID and the incomming message. 
+  // so, if we're looking for all the 0x0A_ Values, we can set it to 0x0A0 which would pass through 
+  // 0x0A0, 0x0A1, 0x0A2 ... As long as the 6th and 8th bit (representing 0x0A0) are "1"
+  canfilterconfig2.FilterMaskIdHigh = 0x0A0 << 5;
+  canfilterconfig2.FilterMaskIdLow = 0x0000;
+  canfilterconfig2.FilterMode = CAN_FILTERMODE_IDMASK;
+  canfilterconfig2.FilterScale = CAN_FILTERSCALE_32BIT;
+  canfilterconfig2.SlaveStartFilterBank = 0;
+
+  HAL_CAN_ConfigFilter(&hcan1, &canfilterconfig2);
 
   /* USER CODE END CAN1_Init 2 */
 
