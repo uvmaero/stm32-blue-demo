@@ -41,7 +41,10 @@
 /* Private variables ---------------------------------------------------------*/
 CAN_HandleTypeDef hcan1;
 
+TIM_HandleTypeDef htim14;
+
 /* USER CODE BEGIN PV */
+uint8_t blink = 0;
 
 /* USER CODE END PV */
 
@@ -49,6 +52,7 @@ CAN_HandleTypeDef hcan1;
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_CAN1_Init(void);
+static void MX_TIM14_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -92,7 +96,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan){
   
   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
   if (RxHeader.StdId == 0x0A1){ // must be "0x012" format with 3 value id
-    datacheck = 1;
+    blink = RxData[0];
   }
 
 }
@@ -128,7 +132,11 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_CAN1_Init();
+  MX_TIM14_Init();
   /* USER CODE BEGIN 2 */
+
+  HAL_TIM_Base_Start_IT(&htim14);
+
 
   HAL_CAN_Start(&hcan1);
   HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
@@ -170,13 +178,13 @@ int main(void)
     // HAL_CAN_AddTxMessage(&hcan1, &TxHeader, TxData, &TxMailbox);
     // datacheck = 1;
 
-    if (datacheck){
-      for (int i=0; i<RxData[1]; i++){
-        HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
-        HAL_Delay(RxData[0]);
-      }
-      datacheck = 0;
-    }
+    // if (blink){
+    //   for (int i=0; i<2; i++){
+    //     HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+    //     HAL_Delay(100);
+    //   }
+    //   blink = 0;
+    // }
 
   }
   /* USER CODE END 3 */
@@ -279,6 +287,37 @@ static void MX_CAN1_Init(void)
 }
 
 /**
+  * @brief TIM14 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM14_Init(void)
+{
+
+  /* USER CODE BEGIN TIM14_Init 0 */
+
+  /* USER CODE END TIM14_Init 0 */
+
+  /* USER CODE BEGIN TIM14_Init 1 */
+
+  /* USER CODE END TIM14_Init 1 */
+  htim14.Instance = TIM14;
+  htim14.Init.Prescaler = 7200-1;
+  htim14.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim14.Init.Period = 100-1;
+  htim14.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim14.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim14) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM14_Init 2 */
+
+  /* USER CODE END TIM14_Init 2 */
+
+}
+
+/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -324,6 +363,28 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+  // htim14 called every 1sec
+  if (htim == &htim14){ // check with timer was called
+    // blink = ~blink;
+    // set the light to whatever the CAN message is
+    // if (blink){
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, blink);
+    // }
+    // else{
+    //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
+
+    }
+    // if (datacheck){
+    // for (int i=0; i<RxData[1]; i++){
+        // HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+    //     HAL_Delay(RxData[0]);
+    //   }
+    //   datacheck = 0;
+    // }
+  // }
+}
 
 /* USER CODE END 4 */
 

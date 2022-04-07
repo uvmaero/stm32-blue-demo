@@ -32,7 +32,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define ADC_BUF_LEN 2 // we're scanning 2 analog in, so just a length of two
+#define ADC_BUF_LEN 4 // we're scanning 2 analog in, so just a length of two
                       // that way we can fill the buffer and still know which
                       // index is for each pin
 /* USER CODE END PD */
@@ -58,6 +58,11 @@ uint16_t raw;
 CAN_TxHeaderTypeDef TxHeader;
 uint32_t TxMailbox;
 uint8_t TxData[8];
+
+uint8_t pedal0 = 0;
+uint8_t pedal1 = 0;
+uint8_t brake0 = 0;
+uint8_t brake1 = 0;
 
 /* USER CODE END PV */
 
@@ -128,7 +133,7 @@ int main(void)
   HAL_ADC_Start_DMA(&hadc1, (uint32_t*)adc_buf, ADC_BUF_LEN);
 
   // setting up the transmit header
-  TxHeader.DLC = 2;
+  TxHeader.DLC = 4;
   TxHeader.ExtId = 0;
   TxHeader.IDE = CAN_ID_STD;
   TxHeader.RTR = CAN_RTR_DATA;
@@ -235,7 +240,7 @@ static void MX_ADC1_Init(void)
   /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
   */
   hadc1.Instance = ADC1;
-  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
+  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
   hadc1.Init.Resolution = ADC_RESOLUTION_12B;
   hadc1.Init.ScanConvMode = ENABLE;
   hadc1.Init.ContinuousConvMode = ENABLE;
@@ -243,7 +248,7 @@ static void MX_ADC1_Init(void)
   hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
   hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
   hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-  hadc1.Init.NbrOfConversion = 2;
+  hadc1.Init.NbrOfConversion = 4;
   hadc1.Init.DMAContinuousRequests = ENABLE;
   hadc1.Init.EOCSelection = ADC_EOC_SEQ_CONV;
   if (HAL_ADC_Init(&hadc1) != HAL_OK)
@@ -252,7 +257,7 @@ static void MX_ADC1_Init(void)
   }
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_0;
+  sConfig.Channel = ADC_CHANNEL_6;
   sConfig.Rank = 1;
   sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
@@ -261,8 +266,24 @@ static void MX_ADC1_Init(void)
   }
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_1;
+  sConfig.Channel = ADC_CHANNEL_7;
   sConfig.Rank = 2;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+  */
+  sConfig.Channel = ADC_CHANNEL_4;
+  sConfig.Rank = 3;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+  */
+  sConfig.Channel = ADC_CHANNEL_5;
+  sConfig.Rank = 4;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
@@ -377,7 +398,7 @@ static void MX_TIM14_Init(void)
   htim14.Instance = TIM14;
   htim14.Init.Prescaler = 7200-1;
   htim14.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim14.Init.Period = 10000-1;
+  htim14.Init.Period = 1000-1;
   htim14.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim14.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim14) != HAL_OK)
@@ -448,13 +469,15 @@ static void MX_GPIO_Init(void)
 // Callbacks for the different interrupts and messages
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
-  if (htim == &htim13){ // check which timer was called
-    HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_1);
+  // if (htim == &htim13){ // check which timer was called
+  //   HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_1);
     
-  }
+  // }
   if (htim == &htim14){ // check with timer was called
-    TxData[0] = 100;
-    TxData[1] = 2;
+    TxData[0] = pedal0;
+    TxData[1] = pedal1;
+    TxData[2] = brake0;
+    TxData[3] = brake1;
 
     // add and transmit the message
     HAL_CAN_AddTxMessage(&hcan1, &TxHeader, TxData, &TxMailbox);
@@ -466,20 +489,30 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 // buffer is full. 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
   
-  if (adc_buf[0] >= 2048){
+  // if (adc_buf[0] >= 2048){
     
-    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
-  }
-  else{
-    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
-  }
-  if (adc_buf[1] >= 2048){
+  //   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);
+  // }
+  // else{
+  //   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_RESET);
+  // }
+  // if (adc_buf[1] >= 2048){
     
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, GPIO_PIN_SET);
-  }
-  else{
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, GPIO_PIN_RESET);
-  }
+  //   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, GPIO_PIN_SET);
+  //   TxData[0] = 1;
+  //   // TxData[1] = 2;float
+
+  //   // add and transmit the message
+  //   // HAL_CAN_AddTxMessage(&hcan1, &TxHeader, TxData, &TxMailbox);
+  // }
+  // else{
+    // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, GPIO_PIN_RESET);
+    pedal0 = adc_buf[0];
+    pedal1 = adc_buf[1];
+
+    // add and transmit the message
+    // HAL_CAN_AddTxMessage(&hcan1, &TxHeader, TxData, &TxMailbox);
+  // }
 }
 
 // void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef* hadc){
